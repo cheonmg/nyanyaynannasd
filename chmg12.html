@@ -333,7 +333,7 @@ document.getElementById('simulate').onclick=()=>{
       result+=calc>=rnd?`✨ ${name} 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name} 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='attack'){
   if(defTr){
-    const dmg=str*randRange(1,7); // ← 여기서 1~7 랜덤
+    const dmg=str*randRange(3,8); // ← 여기서 1~7 랜덤
     defHp.value=Math.max(0,defHp.value-dmg);
     result+=`${name}가 ${defName}를 공격, hp -${dmg} (-체력:${defHp.value})\n`;
   } else result+=`${name}가 공격 대상을 선택하지 않음\n`;
@@ -347,3 +347,4 @@ updateTargetOptions();
 </script>
 </body>
 </html>
+
