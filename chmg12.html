@@ -213,15 +213,14 @@ const charsTable=document.querySelector('#chars-table tbody');
 const defsTable=document.querySelector('#defenders-table tbody');
 const output=document.getElementById('output');
 
-function randMulti(){ return Math.floor(Math.random()*6)+3; }
 function rand100(){ return Math.floor(Math.random()*100)+1; }
 function rand15(){ return Math.floor(Math.random()*15)+1; }
+function randRange(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
 function updateTargetOptions(){
   const charOptions=[...charsTable.querySelectorAll('tr')].map((tr,i)=>`<option value="${i}">${tr.querySelector('.char-name').value}</option>`).join('');
   const defOptions=[...defsTable.querySelectorAll('tr')].map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
 
-  // 캐릭터 대상
   const checkedDefs=[...defsTable.querySelectorAll('tr')].filter(tr=>tr.querySelector('.def-check').checked);
   charsTable.querySelectorAll('.char-target').forEach(sel=>{
     const val=sel.value;
@@ -229,7 +228,6 @@ function updateTargetOptions(){
     if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
   });
 
-  // 좀비 대상
   defsTable.querySelectorAll('.def-target').forEach(sel=>{
     const val=sel.value;
     sel.innerHTML='<option value="">-- 선택 --</option>'+charOptions;
@@ -238,7 +236,6 @@ function updateTargetOptions(){
 }
 defsTable.addEventListener('change',updateTargetOptions);
 
-// 추가/삭제
 document.getElementById('add-char').onclick=()=>{
   const tr=charsTable.rows[0].cloneNode(true);
   tr.querySelectorAll('input').forEach(i=>i.value=i.classList.contains('stat')?5:'' );
@@ -279,6 +276,17 @@ document.getElementById('simulate').onclick=()=>{
   const chars=[...charsTable.querySelectorAll('tr')];
   const defs=[...defsTable.querySelectorAll('tr')];
 
+  // 좀비 행동
+  defs.forEach((tr,i)=>{
+    const name=tr.querySelector('.def-name').value;
+    const targetIndex=tr.querySelector('.def-target').value;
+    const charTr=chars[targetIndex];
+    if(!charTr) return;
+    const charName=charTr.querySelector('.char-name').value;
+    const dmg=randRange(4,22);
+    result+=`${name}가 ${charName}를 공격, hp -${dmg}\n`;
+  });
+
   // 캐릭터 행동
   chars.forEach(tr=>{
     const name=tr.querySelector('.char-name').value;
@@ -298,10 +306,10 @@ document.getElementById('simulate').onclick=()=>{
       const rnd=rand100();
       const calc=dex*rand15();
       if(calc>=rnd){
-        result+=`${name} 회피 성공. \n`;
+        result+=`${name} 회피 성공.\n`;
       } else {
-        const dmg=Math.floor(Math.random()*20)+1;
-        result+=`${name} 회피 실패, hp -${dmg}\n`;
+        const dmg=randRange(4,22);
+        result+=`${name} 회피 실패, hp-${dmg}\n`;
       }
     }else if(action==='intelligence'){
       const rnd=rand100();
@@ -324,32 +332,17 @@ document.getElementById('simulate').onclick=()=>{
       const calc=sp*rand15();
       result+=calc>=rnd?`✨ ${name} 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name} 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='attack'){
-      if(defTr){
-        const dmg=Math.floor(Math.random()*10)+1;
-        defHp.value=Math.max(0,defHp.value-dmg);
-        result+=`${name}가 ${defName}를 공격! ${dmg} 피해 (-체력:${defHp.value})\n`;
-      } else result+=`${name}가 공격 대상을 선택하지 않음\n`;
-    }
-  });
-
-  // 좀비 행동
-  defs.forEach((tr,i)=>{
-    const name=tr.querySelector('.def-name').value;
-    const str=Number(tr.querySelector('.def-str').value);
-    const dex=Number(tr.querySelector('.def-dex').value);
-    const targetIndex=tr.querySelector('.def-target').value;
-    const charTr=chars[targetIndex];
-    if(!charTr) return;
-    const charName=charTr.querySelector('.char-name').value;
-    const dmg=Math.floor(Math.random()*10)+1;
-    result+=`${name}가 ${charName}를 공격! ${dmg} 피해\n`;
-  });
+  if(defTr){
+    const dmg=str*randRange(1,7); // ← 여기서 1~7 랜덤
+    defHp.value=Math.max(0,defHp.value-dmg);
+    result+=`${name}가 ${defName}를 공격, hp -${dmg} (-체력:${defHp.value})\n`;
+  } else result+=`${name}가 공격 대상을 선택하지 않음\n`;
+}
+});
 
   output.textContent=result;
 };
-
 document.getElementById('clear-output').onclick=()=>output.textContent='';
-
 updateTargetOptions();
 </script>
 </body>
