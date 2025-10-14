@@ -32,7 +32,7 @@ button.ghost{background:#eef2ff;color:#213}
     <table id="chars-table">
       <thead>
       <tr>
-        <th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th><th>행동</th><th>공격 대상</th>
+        <th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th><th>행동</th><th>대상</th>
       </tr>
       </thead>
       <tbody>
@@ -66,11 +66,11 @@ button.ghost{background:#eef2ff;color:#213}
 
   <!-- 좀비 -->
   <div class="card">
-    <h2>좀비</h2>
+    <h2>좀비 목록</h2>
     <table id="defenders-table">
       <thead>
       <tr>
-        <th>선택</th><th>이름</th><th>근력</th><th>민첩</th><th>체력</th>
+        <th>선택</th><th>이름</th><th>근력</th><th>민첩</th><th>체력</th><th>대상</th>
       </tr>
       </thead>
       <tbody>
@@ -80,6 +80,7 @@ button.ghost{background:#eef2ff;color:#213}
         <td><input type="number" class="def-str" value="5"></td>
         <td><input type="number" class="def-dex" value="3"></td>
         <td><input type="number" class="def-hp" value="150"></td>
+        <td><select class="def-target"></select></td>
       </tr>
       </tbody>
     </table>
@@ -110,14 +111,28 @@ function rand15(){ return Math.floor(Math.random()*15)+1; }
 
 function updateTargetOptions(){
   const checkedDefs=[...defsTable.querySelectorAll('tr')].filter(tr=>tr.querySelector('.def-check').checked);
-  charsTable.querySelectorAll('.char-target').forEach(sel=>{
+  const chars=[...charsTable.querySelectorAll('tr')];
+
+  // 캐릭터 선택지
+  chars.forEach(selTr=>{
+    const sel=selTr.querySelector('.char-target');
     const val=sel.value;
-    sel.innerHTML='<option value="">-- 선택 --</option>'+
-      checkedDefs.map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
+    sel.innerHTML='<option value="">-- 선택 --</option>'+checkedDefs.map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
+    if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
+  });
+
+  // 좀비 선택지
+  const checkedChars=chars;
+  [...defsTable.querySelectorAll('tr')].forEach(selTr=>{
+    const sel=selTr.querySelector('.def-target');
+    const val=sel.value;
+    sel.innerHTML='<option value="">-- 선택 --</option>'+checkedChars.map((tr,i)=>`<option value="${i}">${tr.querySelector('.char-name').value}</option>`).join('');
     if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
   });
 }
+
 defsTable.addEventListener('change',updateTargetOptions);
+charsTable.addEventListener('change',updateTargetOptions);
 
 // 추가/삭제
 document.getElementById('add-char').onclick=()=>{
@@ -160,7 +175,6 @@ document.getElementById('simulate').onclick=()=>{
 
   const chars=[...charsTable.querySelectorAll('tr')];
   const defs=[...defsTable.querySelectorAll('tr')];
-  const checkedDefs=defs.filter(d=>d.querySelector('.def-check').checked);
 
   // 캐릭터 행동
   chars.forEach(tr=>{
@@ -172,7 +186,7 @@ document.getElementById('simulate').onclick=()=>{
     const sp=Number(tr.querySelector('.char-special').value) || 0;
     const action=tr.querySelector('.char-action').value;
     const targetIndex=tr.querySelector('.char-target').value;
-    const defTr=checkedDefs[targetIndex];
+    const defTr=targetIndex!=='' ? defs[targetIndex] : null;
     const defName=defTr?.querySelector('.def-name').value;
     const defHp=defTr?.querySelector('.def-hp');
 
@@ -183,12 +197,12 @@ document.getElementById('simulate').onclick=()=>{
     } else if(action==='evade' && defTr){
       const rnd=rand100();
       const calc=dex*rand15();
-      if(calc >= rnd){
-        result += `${name}은(는) 회피 성공! (랜덤:${rnd} ≤ ${calc})\n`;
+      if(calc>=rnd){
+        result+=`${name}은(는) 회피 성공! (랜덤:${rnd} ≤ ${calc})\n`;
       } else {
-        const damage = str*randMulti();
+        const damage=str*randMulti();
         defHp.value=Math.max(0,defHp.value-damage);
-        result += `${name}은(는) 회피 실패! ${defName} ▶ ${name}에게 ${damage} 피해 (남은 체력: ${defHp.value})\n`;
+        result+=`${name}은(는) 회피 실패! ${defName} ▶ ${name}에게 ${damage} 피해 (남은 체력: ${defHp.value})\n`;
       }
     } else if(action==='strength'){
       const rnd=rand100();
@@ -208,46 +222,4 @@ document.getElementById('simulate').onclick=()=>{
       result+=calc>=rnd?`🍀 ${name}의 행운 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🍀 ${name}의 행운 사용 실패! (랜덤:${rnd} > ${calc})\n`;
     } else if(action==='special'){
       const rnd=rand100();
-      const calc=sp*rand15();
-      result+=calc>=rnd?`✨ ${name}의 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name}의 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
-    }
-  });
-
-  // 좀비 행동
-  defs.forEach(tr=>{
-    if(!tr.querySelector('.def-check').checked) return;
-    const name=tr.querySelector('.def-name').value;
-    const str=Number(tr.querySelector('.def-str').value);
-    const dex=Number(tr.querySelector('.def-dex').value);
-    if(chars.length===0) return;
-    const targetTr=chars[Math.floor(Math.random()*chars.length)];
-    const targetName=targetTr.querySelector('.char-name').value;
-    const targetDex=Number(targetTr.querySelector('.stat.dex').value);
-    const targetHpInput=targetTr.querySelector('.stat.str'); // 임시 HP는 근력 입력값 대체
-    const targetAction=targetTr.querySelector('.char-action').value;
-
-    if(targetAction==='evade'){
-      const charScore=targetDex*randMulti();
-      const defScore=dex*randMulti();
-      if(defScore>charScore){
-        const damage=str*randMulti();
-        result+=`${targetName} 회피 실패, ${name} ▶ HP -${damage}\n`;
-      } else {
-        result+=`${targetName} 회피 성공, 피해 없음\n`;
-      }
-    } else {
-      const damage=str*randMulti();
-      result+=`${name} ▶ ${targetName}에게 ${damage} 피해\n`;
-    }
-  });
-
-  output.textContent=result||'행동 없음.';
-};
-
-// 지우기
-document.getElementById('clear-output').onclick=()=>{output.textContent='출력 결과가 여기에 표시됩니다.';};
-
-updateTargetOptions();
-</script>
-</body>
-</html>
+      const calc
