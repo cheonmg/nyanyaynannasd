@@ -7,338 +7,438 @@
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR','Malgun Gothic',sans-serif;}
 body{margin:20px;background:#f6f7fb;color:#111}
-h1{font-size:20px;margin-bottom:8px}
-.container{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+h1{font-size:20px;margin-bottom:12px}
+.container{display:grid;grid-template-columns:1fr;gap:20px}
+
+/* 상단 캐릭터 목록 */
+.card.fullwidth{width:100%;overflow:auto;height:400px}
+
+/* 하단 전투 캐릭터 + 좀비 배치 */
+.bottom-container{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+
+/* 카드 스타일 */
 .card{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(18,38,63,0.06);padding:16px}
+
+/* 테이블 스타일 */
 table{width:100%;border-collapse:collapse}
 th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
-th:first-child,td:first-child{width:40px;text-align:center}
+th:first-child,td:first-child{text-align:center;width:40px}
 input[type="text"],input[type="number"],select{width:100%;box-sizing:border-box;padding:6px;border-radius:6px;border:1px solid #ddd}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-button{padding:8px 10px;border-radius:8px;border:0;background:#2b6ef6;color:#fff;cursor:pointer}
+button{padding:6px 10px;border-radius:6px;border:0;background:#2b6ef6;color:#fff;cursor:pointer}
 button.ghost{background:#eef2ff;color:#213}
 #output{white-space:pre-wrap;background:#0f1724;color:#e6eef8;padding:12px;border-radius:8px;min-height:180px}
-.fullwidth{grid-column:1/-1}
-@media(max-width:900px){.container{grid-template-columns:1fr}.fullwidth{grid-column:auto}}
+
+/* 모바일 대응 */
+@media(max-width:900px){.bottom-container{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <h1>청멸기 전투 지문 출력</h1>
-
 <div class="container">
-  <!-- 캐릭터 -->
+
+<!-- 1. 캐릭터 전체 목록 (상단, 페이지 폭 맞춤) -->
+<div class="card fullwidth">
+<h2>캐릭터 전체 목록</h2>
+<table id="register-table">
+<thead>
+<tr><th>선택</th><th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="강서우"></td>
+<td><input type="number" class="char-str" value="2"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="4"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="권지웅"></td>
+<td><input type="number" class="char-str" value="3"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="3"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="김이유"></td>
+<td><input type="number" class="char-str" value="2"></td>
+<td><input type="number" class="char-dex" value="2"></td>
+<td><input type="number" class="char-int" value="1"></td>
+<td><input type="number" class="char-luk" value="4"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="명의주"></td>
+<td><input type="number" class="char-str" value="3"></td>
+<td><input type="number" class="char-dex" value="2"></td>
+<td><input type="number" class="char-int" value="4"></td>
+<td><input type="number" class="char-luk" value="3"></td>
+<td><input type="number" class="char-special" value="3"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="서해찬"></td>
+<td><input type="number" class="char-str" value="4"></td>
+<td><input type="number" class="char-dex" value="5"></td>
+<td><input type="number" class="char-int" value="2"></td>
+<td><input type="number" class="char-luk" value="1"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="선태의"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="1"></td>
+<td><input type="number" class="char-int" value="4"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="선하늘"></td>
+<td><input type="number" class="char-str" value="1"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="2"></td>
+<td><input type="number" class="char-luk" value="5"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="송다애"></td>
+<td><input type="number" class="char-str" value="2"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="양다현"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="4"></td>
+<td><input type="number" class="char-int" value="1"></td>
+<td><input type="number" class="char-luk" value="1"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="유여름"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="4"></td>
+<td><input type="number" class="char-int" value="1"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="유제하"></td>
+<td><input type="number" class="char-str" value="3"></td>
+<td><input type="number" class="char-dex" value="2"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="3"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="윤가야"></td>
+<td><input type="number" class="char-str" value="1"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="5"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="윤진광"></td>
+<td><input type="number" class="char-str" value="4"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="이정석"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="4"></td>
+<td><input type="number" class="char-int" value="2"></td>
+<td><input type="number" class="char-luk" value="3"></td>
+<td><input type="number" class="char-special" value="2"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="이혜영"></td>
+<td><input type="number" class="char-str" value="1"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="4"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="이희성"></td>
+<td><input type="number" class="char-str" value="2"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="3"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="천명하"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="4"></td>
+<td><input type="number" class="char-int" value="1"></td>
+<td><input type="number" class="char-luk" value="1"></td>
+<td><input type="number" class="char-special" value="3"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="한윤재"></td>
+<td><input type="number" class="char-str" value="4"></td>
+<td><input type="number" class="char-dex" value="2"></td>
+<td><input type="number" class="char-int" value="4"></td>
+<td><input type="number" class="char-luk" value="1"></td>
+<td><input type="number" class="char-special" value="5"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="해사연"></td>
+<td><input type="number" class="char-str" value="3"></td>
+<td><input type="number" class="char-dex" value="2"></td>
+<td><input type="number" class="char-int" value="2"></td>
+<td><input type="number" class="char-luk" value="5"></td>
+<td><input type="number" class="char-special" value="4"></td>
+</tr>
+<tr>
+<td><input type="checkbox" class="char-select"></td>
+<td><input type="text" class="char-name" value="현채우"></td>
+<td><input type="number" class="char-str" value="5"></td>
+<td><input type="number" class="char-dex" value="3"></td>
+<td><input type="number" class="char-int" value="3"></td>
+<td><input type="number" class="char-luk" value="2"></td>
+<td><input type="number" class="char-special" value="3"></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<!-- 하단 전투 캐릭터 + 좀비 -->
+
+<div class="bottom-container">
   <div class="card">
-    <h2>캐릭터 목록</h2>
+    <h2>전투 캐릭터 목록</h2>
+<style>
+#chars-table th:first-child,
+#chars-table td:first-child {
+  width: 150px; /* 이름 칸 너비 조정 */
+}
+</style>
+
     <table id="chars-table">
-      <thead>
-      <tr>
-        <th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th><th>행동</th><th>공격 대상</th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><input type="text" class="char-name" value="캐릭터 1"></td>
-          <td><input type="number" class="stat str" value="5" min="0"></td>
-          <td><input type="number" class="stat dex" value="5" min="0"></td>
-          <td><input type="number" class="stat int" value="5" min="0"></td>
-          <td><input type="number" class="stat luk" value="5" min="0"></td>
-          <td><input type="text" class="char-special" value="5"></td>
-          <td>
-            <select class="char-action">
-              <option value="attack">공격</option>
-              <option value="evade">회피</option>
-              <option value="strength">근력 판정</option>
-              <option value="agility">민첩 판정</option>
-              <option value="intelligence">지능 사용</option>
-              <option value="luck">행운 사용</option>
-              <option value="special">특수 판정</option>
-            </select>
-          </td>
-          <td><select class="char-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="char-name" value="캐릭터 2"></td>
-          <td><input type="number" class="stat str" value="1" min="0"></td>
-          <td><input type="number" class="stat dex" value="1" min="0"></td>
-          <td><input type="number" class="stat int" value="2" min="0"></td>
-          <td><input type="number" class="stat luk" value="5" min="0"></td>
-          <td><input type="text" class="char-special" value="졸려"></td>
-          <td>
-            <select class="char-action">
-              <option value="attack">공격</option>
-              <option value="evade">회피</option>
-              <option value="strength">근력 판정</option>
-              <option value="agility">민첩 판정</option>
-              <option value="intelligence">지능 사용</option>
-              <option value="luck">행운 사용</option>
-            </select>
-          </td>
-          <td><select class="char-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="char-name" value="캐릭터 3"></td>
-          <td><input type="number" class="stat str" value="5" min="0"></td>
-          <td><input type="number" class="stat dex" value="5" min="0"></td>
-          <td><input type="number" class="stat int" value="5" min="0"></td>
-          <td><input type="number" class="stat luk" value="5" min="0"></td>
-          <td><input type="text" class="char-special" value="졸려"></td>
-          <td>
-            <select class="char-action">
-              <option value="attack">공격</option>
-              <option value="evade">회피</option>
-              <option value="strength">근력 판정</option>
-              <option value="agility">민첩 판정</option>
-              <option value="intelligence">지능 사용</option>
-              <option value="luck">행운 사용</option>
-            </select>
-          </td>
-          <td><select class="char-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="char-name" value="캐릭터 4"></td>
-          <td><input type="number" class="stat str" value="5" min="0"></td>
-          <td><input type="number" class="stat dex" value="5" min="0"></td>
-          <td><input type="number" class="stat int" value="5" min="0"></td>
-          <td><input type="number" class="stat luk" value="5" min="0"></td>
-          <td><input type="text" class="char-special" value="졸려"></td>
-          <td>
-            <select class="char-action">
-              <option value="attack">공격</option>
-              <option value="evade">회피</option>
-              <option value="strength">근력 판정</option>
-              <option value="agility">민첩 판정</option>
-              <option value="intelligence">지능 사용</option>
-              <option value="luck">행운 사용</option>
-            </select>
-          </td>
-          <td><select class="char-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="text" class="char-name" value="캐릭터 5"></td>
-          <td><input type="number" class="stat str" value="5" min="0"></td>
-          <td><input type="number" class="stat dex" value="5" min="0"></td>
-          <td><input type="number" class="stat int" value="5" min="0"></td>
-          <td><input type="number" class="stat luk" value="5" min="0"></td>
-          <td><input type="text" class="char-special" value="졸려"></td>
-          <td>
-            <select class="char-action">
-              <option value="attack">공격</option>
-              <option value="evade">회피</option>
-              <option value="strength">근력 판정</option>
-              <option value="agility">민첩 판정</option>
-              <option value="intelligence">지능 사용</option>
-              <option value="luck">행운 사용</option>
-            </select>
-          </td>
-          <td><select class="char-target"></select></td>
-        </tr>
-      </tbody>
+      <thead><tr><th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th><th>무기</th><th>행동</th><th>공격 대상</th></tr></thead>
+      <tbody></tbody>
     </table>
-    <div class="controls">
-      <button id="add-char">행 추가</button>
-      <button id="remove-last-char" class="ghost">마지막 행 삭제</button>
-    </div>
   </div>
 
-  <!-- 좀비 -->
   <div class="card">
     <h2>좀비</h2>
     <table id="defenders-table">
-      <thead>
-      <tr>
-        <th>선택</th><th>이름</th><th>근력</th><th>민첩</th><th>체력</th><th>공격 대상</th>
-      </tr>
-      </thead>
+      <thead><tr><th>선택</th><th>이름</th><th>체력</th><th>공격 대상</th></tr></thead>
       <tbody>
-        <tr>
-          <td><input type="checkbox" class="def-check"></td>
-          <td><input type="text" class="def-name" value="좀비1"></td>
-          <td><input type="number" class="def-str" value="5"></td>
-          <td><input type="number" class="def-dex" value="3"></td>
-          <td><input type="number" class="def-hp" value="150"></td>
-          <td><select class="def-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="def-check"></td>
-          <td><input type="text" class="def-name" value="좀비2"></td>
-          <td><input type="number" class="def-str" value="2"></td>
-          <td><input type="number" class="def-dex" value="1"></td>
-          <td><input type="number" class="def-hp" value="150"></td>
-          <td><select class="def-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="def-check"></td>
-          <td><input type="text" class="def-name" value="좀비3"></td>
-          <td><input type="number" class="def-str" value="4"></td>
-          <td><input type="number" class="def-dex" value="2"></td>
-          <td><input type="number" class="def-hp" value="150"></td>
-          <td><select class="def-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="def-check"></td>
-          <td><input type="text" class="def-name" value="좀비4"></td>
-          <td><input type="number" class="def-str" value="2"></td>
-          <td><input type="number" class="def-dex" value="1"></td>
-          <td><input type="number" class="def-hp" value="150"></td>
-          <td><select class="def-target"></select></td>
-        </tr>
-        <tr>
-          <td><input type="checkbox" class="def-check"></td>
-          <td><input type="text" class="def-name" value="좀비5"></td>
-          <td><input type="number" class="def-str" value="5"></td>
-          <td><input type="number" class="def-dex" value="5"></td>
-          <td><input type="number" class="def-hp" value="150"></td>
-          <td><select class="def-target"></select></td>
-        </tr>
+        <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비1"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+        <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비2"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+ <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비3"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+ <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비4"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+ <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비5"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+ <tr><td><input type="checkbox" class="def-check"></td><td><input type="text" class="def-name" value="좀비6"></td><td><input type="number" class="def-hp" value="150"></td><td><select class="def-target"></select></td></tr>
+
+
+
       </tbody>
     </table>
-    <div class="controls">
-      <button id="add-def">행 추가</button>
-      <button id="remove-selected-defs" class="ghost">선택 삭제</button>
-      <button id="select-all-defs" class="ghost">전체 선택 토글</button>
-    </div>
-  </div>
-
-  <!-- 출력 -->
-  <div class="card fullwidth">
-    <h2>전투 결과</h2>
-    <button id="simulate">출력</button>
-    <button id="clear-output" class="ghost">지우기</button>
-    <div id="output">출력 결과가 여기에 표시됩니다.</div>
   </div>
 </div>
 
+<style>
+/* 기존 fullwidth 제거, bottom-container에 grid 사용 */
+.bottom-container{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+.card{background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(18,38,63,0.06);padding:12px;font-size:14px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th,td{padding:4px;border-bottom:1px solid #eee;text-align:left}
+th:first-child,td:first-child{text-align:center;width:30px}
+select,input[type="text"],input[type="number"]{padding:4px;font-size:12px}
+@media(max-width:900px){.bottom-container{grid-template-columns:1fr}}
+</style>
+
+
+<!-- 출력 -->
+<div class="card fullwidth">
+<h2>전투 결과</h2>
+<button id="simulate">출력</button>
+<button id="clear-output" class="ghost">지우기</button>
+<div id="output">출력 결과가 여기에 표시됩니다.</div>
+</div>
+</div>
+
 <script>
-const charsTable=document.querySelector('#chars-table tbody');
-const defsTable=document.querySelector('#defenders-table tbody');
-const output=document.getElementById('output');
+const regTable = document.querySelector('#register-table tbody');
+const charsTable = document.querySelector('#chars-table tbody');
+const defsTable = document.querySelector('#defenders-table tbody');
+const output = document.getElementById('output');
 
-function rand100(){ return Math.floor(Math.random()*100)+1; }
-function randRange(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-function rand15(){ return Math.floor(Math.random()*7)+1; } // 근력/판정 1~7
+function rand100(){return Math.floor(Math.random()*100)+1;}
+function randRange(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+function rand5to18(){return Math.floor(Math.random()*14)+5;}
+function rand2to8(){return Math.floor(Math.random()*7)+2;}
 
+// 무기 데이터
+const weapons = {
+  "커터칼":3,
+  "삽":5,
+  "붓":1,
+  "목공용 망치":10,
+  "빗자루":6,
+  "대걸레":7
+};
+
+// 전투 캐릭터 업데이트
+function updateBattleChars(){
+  charsTable.innerHTML='';
+  const selected=[...regTable.querySelectorAll('tr')].filter(tr=>tr.querySelector('.char-select').checked);
+  selected.forEach(tr=>{
+    const name=tr.querySelector('.char-name').value;
+    const str=tr.querySelector('.char-str').value;
+    const dex=tr.querySelector('.char-dex').value;
+    const intl=tr.querySelector('.char-int').value;
+    const luk=tr.querySelector('.char-luk').value;
+    const sp=tr.querySelector('.char-special').value;
+    const newRow=document.createElement('tr');
+
+    // 무기 선택 옵션
+    const weaponOptions = Object.keys(weapons).map(w=>`<option value="${w}">${w}</option>`).join('');
+
+    newRow.innerHTML=`
+      <td>${name}</td><td>${str}</td><td>${dex}</td><td>${intl}</td><td>${luk}</td><td>${sp}</td>
+      <td><select class="char-weapon"><option value="">-- 없음 --</option>${weaponOptions}</select></td>
+      <td><select class="char-action">
+        <option value="attack">공격</option>
+        <option value="evade">회피</option>
+        <option value="strength">근력 판정</option>
+        <option value="agility">민첩 판정</option>
+        <option value="intelligence">지능 사용</option>
+        <option value="luck">행운 사용</option>
+        <option value="special">특수 판정</option>
+      </select></td>
+      <td><select class="char-target"></select></td>`;
+    charsTable.appendChild(newRow);
+  });
+  updateTargetOptions();
+}
+
+// 타겟 옵션 갱신
 function updateTargetOptions(){
-  const charOptions=[...charsTable.querySelectorAll('tr')].map((tr,i)=>`<option value="${i}">${tr.querySelector('.char-name').value}</option>`).join('');
-  const checkedDefs=[...defsTable.querySelectorAll('tr')].filter(tr=>tr.querySelector('.def-check').checked);
-  charsTable.querySelectorAll('.char-target').forEach(sel=>{
+  const chars=[...charsTable.querySelectorAll('tr')];
+  const defs=[...defsTable.querySelectorAll('tr')];
+  const charOptions=chars.map((tr,i)=>`<option value="${i}">${tr.cells[0].textContent}</option>`).join('');
+  const defOptions=defs.map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
+  chars.forEach(tr=>{
+    const sel=tr.querySelector('.char-target');
     const val=sel.value;
-    sel.innerHTML='<option value="">-- 선택 --</option>'+checkedDefs.map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
+    sel.innerHTML='<option value="">-- 선택 --</option>'+defOptions;
     if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
   });
-  defsTable.querySelectorAll('.def-target').forEach(sel=>{
+  defs.forEach(tr=>{
+    const sel=tr.querySelector('.def-target');
     const val=sel.value;
     sel.innerHTML='<option value="">-- 선택 --</option>'+charOptions;
     if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
   });
 }
-defsTable.addEventListener('change',updateTargetOptions);
 
-document.getElementById('add-char').onclick=()=>{
-  const tr=charsTable.rows[0].cloneNode(true);
-  tr.querySelectorAll('input').forEach(i=>i.value=i.classList.contains('stat')?5:'' );
-  charsTable.appendChild(tr);
-  updateTargetOptions();
-};
-document.getElementById('remove-last-char').onclick=()=>{
-  if(charsTable.rows.length>1) charsTable.lastElementChild.remove();
-  updateTargetOptions();
-};
-document.getElementById('add-def').onclick=()=>{
-  const tr=defsTable.rows[0].cloneNode(true);
-  tr.querySelectorAll('input').forEach(i=>{
-    if(i.classList.contains('def-hp')) i.value=150;
-    else if(i.type==='number') i.value=5;
-    else if(i.classList.contains('def-check')) i.checked=false;
-    else i.value='';
-  });
-  defsTable.appendChild(tr);
-  updateTargetOptions();
-};
-document.getElementById('remove-selected-defs').onclick=()=>{
-  [...defsTable.querySelectorAll('tr')].forEach(tr=>{
-    if(tr.querySelector('.def-check').checked) tr.remove();
-  });
-  updateTargetOptions();
-};
-document.getElementById('select-all-defs').onclick=()=>{
-  const rows=[...defsTable.querySelectorAll('tr')];
-  const anyUnchecked=rows.some(tr=>!tr.querySelector('.def-check').checked);
-  rows.forEach(tr=>tr.querySelector('.def-check').checked=anyUnchecked);
-  updateTargetOptions();
-};
+// 체크박스 클릭 시 바로 전투 캐릭터 반영
+regTable.addEventListener('change', e => {
+  if(e.target.classList.contains('char-select')){
+    updateBattleChars();
+  }
+});
 
 // 전투 시뮬레이션
 document.getElementById('simulate').onclick=()=>{
-  let result='';   // 좀비 행동
-  let result2='';  // 캐릭터 행동
+  let log='';
   const chars=[...charsTable.querySelectorAll('tr')];
   const defs=[...defsTable.querySelectorAll('tr')];
 
-  // 좀비 행동
-  defs.forEach((tr,i)=>{
-    const name=tr.querySelector('.def-name').value;
-    const targetIndex=tr.querySelector('.def-target').value;
-    const charTr=chars[targetIndex];
-    if(!charTr) return;
-    const charName=charTr.querySelector('.char-name').value;
-    const dmg=randRange(4,22);
-    result+=`${name}가 ${charName}를 공격, hp -${dmg}\n`;
+  // 1) 좀비 공격
+  defs.forEach((zombie, i) => {
+    const zName = zombie.querySelector('.def-name').value;
+    const targetIndex = zombie.querySelector('.def-target').value;
+    if (targetIndex === '') return;
+    const charTr = chars[targetIndex];
+    if (!charTr) return;
+    const charName = charTr.cells[0].textContent;
+    const dmg = randRange(10, 30);
+    log += `${zName}이(가) ${charName}을(를) 공격, hp -${dmg}\n`;
   });
 
-  // 캐릭터 행동
+  // 2) 캐릭터 판정
   chars.forEach(tr=>{
-    const name=tr.querySelector('.char-name').value;
-    const str=Number(tr.querySelector('.stat.str').value);
-    const dex=Number(tr.querySelector('.stat.dex').value);
-    const intl=Number(tr.querySelector('.stat.int').value);
-    const luk=Number(tr.querySelector('.stat.luk').value);
-    const sp=Number(tr.querySelector('.char-special').value) || 0;
+    const name=tr.cells[0].textContent;
+    const stats={ str:Number(tr.cells[1].textContent), dex:Number(tr.cells[2].textContent),
+                  int:Number(tr.cells[3].textContent), luk:Number(tr.cells[4].textContent),
+                  sp:Number(tr.cells[5].textContent)};
+    const action=tr.querySelector('.char-action').value;
+    const rnd=rand100();
+    let calc,label;
+    switch(action){
+      case 'evade': calc=stats.dex*rand5to18(); label='회피'; break;
+      case 'strength': calc=stats.str*rand5to18(); label='근력'; break;
+      case 'agility': calc=stats.dex*rand5to18(); label='민첩'; break;
+      case 'intelligence': calc=stats.int*rand5to18(); label='지능'; break;
+      case 'luck': calc=stats.luk*rand5to18(); label='행운'; break;
+      case 'special': calc=stats.sp*rand5to18(); label='특수'; break;
+      default: return;
+    }
+    const result=rnd<=calc?"성공.":"실패.";
+    log+=`${name}, ${label} (${calc.toFixed(1)} vs 굴림 ${rnd}) → ${result}\n`;
+  });
+
+  // 3) 캐릭터 공격
+  chars.forEach(tr=>{
+    const name=tr.cells[0].textContent;
+    const str=Number(tr.cells[1].textContent);
     const action=tr.querySelector('.char-action').value;
     const targetIndex=tr.querySelector('.char-target').value;
-    const checkedDefs=[...defsTable.querySelectorAll('tr')].filter(d=>d.querySelector('.def-check').checked);
-    const defTr=checkedDefs[targetIndex];
-    const defName=defTr?.querySelector('.def-name').value;
-    const defHp=defTr?.querySelector('.def-hp');
+    const defTr=defs[targetIndex];
+    const weapon=tr.querySelector('.char-weapon').value;
+    const weaponBonus=weapons[weapon]||0;
 
-    if(action==='evade'){
-      const rnd=rand100();
-      const calc=dex*rand15();
-      if(calc>=rnd) result2+=`${name} 회피 성공.\n`;
-      else { const dmg=randRange(4,22); result2+=`${name} 회피 실패, hp-${dmg}\n`; }
-    }else if(action==='intelligence'){
-      const rnd=rand100();
-      const calc=intl*rand15();
-      result2+=calc>=rnd?`🧠 ${name} 지능 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🧠 ${name} 지능 사용 실패! (랜덤:${rnd} > ${calc})\n`;
-    }else if(action==='luck'){
-      const rnd=rand100();
-      const calc=luk*rand15();
-      result2+=calc>=rnd?`🍀 ${name} 행운 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🍀 ${name} 행운 사용 실패! (랜덤:${rnd} > ${calc})\n`;
-    }else if(action==='strength'){
-      const rnd=rand100();
-      const calc=str*rand15();
-      result2+=calc>=rnd?`💪 ${name} 근력 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`💪 ${name} 근력 판정 실패! (랜덤:${rnd} > ${calc})\n`;
-    }else if(action==='agility'){
-      const rnd=rand100();
-      const calc=dex*rand15();
-      result2+=calc>=rnd?`🤸 ${name} 민첩 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🤸 ${name} 민첩 판정 실패! (랜덤:${rnd} > ${calc})\n`;
-    }else if(action==='special'){
-      const rnd=rand100();
-      const calc=sp*rand15();
-      result2+=calc>=rnd?`✨ ${name} 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name} 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
-    }else if(action==='attack'){
+    if(action==='attack'){
       if(defTr){
-        const dmg=str*randRange(3,8);
+        const defName=defTr.querySelector('.def-name').value;
+        const defHp=defTr.querySelector('.def-hp');
+        const dmg=str*rand2to8()+weaponBonus;
         defHp.value=Math.max(0,defHp.value-dmg);
-        result2+=`${name}가 ${defName}를 공격, hp -${dmg} (-체력:${defHp.value})\n`;
-      } else result2+=`${name}가 공격 대상을 선택하지 않음\n`;
+        log+=`${name}이(가) ${defName}을(를) 공격, 피해 ${dmg} (${defName} hp: ${defHp.value})\n`;
+      } else {
+        log+=`${name}의 공격 대상이 없다.\n`;
+      }
     }
   });
 
-  output.textContent = result + result2;
+  output.textContent=log;
 };
 
 document.getElementById('clear-output').onclick=()=>output.textContent='';
-updateTargetOptions();
+
+// 초기 갱신
+updateBattleChars();
 </script>
+
 </body>
 </html>
