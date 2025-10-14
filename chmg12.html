@@ -214,20 +214,17 @@ const defsTable=document.querySelector('#defenders-table tbody');
 const output=document.getElementById('output');
 
 function rand100(){ return Math.floor(Math.random()*100)+1; }
-function rand15(){ return Math.floor(Math.random()*15)+1; }
 function randRange(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function rand15(){ return Math.floor(Math.random()*7)+1; } // 근력/판정 1~7
 
 function updateTargetOptions(){
   const charOptions=[...charsTable.querySelectorAll('tr')].map((tr,i)=>`<option value="${i}">${tr.querySelector('.char-name').value}</option>`).join('');
-  const defOptions=[...defsTable.querySelectorAll('tr')].map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
-
   const checkedDefs=[...defsTable.querySelectorAll('tr')].filter(tr=>tr.querySelector('.def-check').checked);
   charsTable.querySelectorAll('.char-target').forEach(sel=>{
     const val=sel.value;
     sel.innerHTML='<option value="">-- 선택 --</option>'+checkedDefs.map((tr,i)=>`<option value="${i}">${tr.querySelector('.def-name').value}</option>`).join('');
     if(val && sel.querySelector(`option[value="${val}"]`)) sel.value=val;
   });
-
   defsTable.querySelectorAll('.def-target').forEach(sel=>{
     const val=sel.value;
     sel.innerHTML='<option value="">-- 선택 --</option>'+charOptions;
@@ -272,7 +269,8 @@ document.getElementById('select-all-defs').onclick=()=>{
 
 // 전투 시뮬레이션
 document.getElementById('simulate').onclick=()=>{
-  let result='';
+  let result='';   // 좀비 행동
+  let result2='';  // 캐릭터 행동
   const chars=[...charsTable.querySelectorAll('tr')];
   const defs=[...defsTable.querySelectorAll('tr')];
 
@@ -305,46 +303,42 @@ document.getElementById('simulate').onclick=()=>{
     if(action==='evade'){
       const rnd=rand100();
       const calc=dex*rand15();
-      if(calc>=rnd){
-        result+=`${name} 회피 성공.\n`;
-      } else {
-        const dmg=randRange(4,22);
-        result+=`${name} 회피 실패, hp-${dmg}\n`;
-      }
+      if(calc>=rnd) result2+=`${name} 회피 성공.\n`;
+      else { const dmg=randRange(4,22); result2+=`${name} 회피 실패, hp-${dmg}\n`; }
     }else if(action==='intelligence'){
       const rnd=rand100();
       const calc=intl*rand15();
-      result+=calc>=rnd?`🧠 ${name} 지능 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🧠 ${name} 지능 사용 실패! (랜덤:${rnd} > ${calc})\n`;
+      result2+=calc>=rnd?`🧠 ${name} 지능 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🧠 ${name} 지능 사용 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='luck'){
       const rnd=rand100();
       const calc=luk*rand15();
-      result+=calc>=rnd?`🍀 ${name} 행운 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🍀 ${name} 행운 사용 실패! (랜덤:${rnd} > ${calc})\n`;
+      result2+=calc>=rnd?`🍀 ${name} 행운 사용 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🍀 ${name} 행운 사용 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='strength'){
       const rnd=rand100();
       const calc=str*rand15();
-      result+=calc>=rnd?`💪 ${name} 근력 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`💪 ${name} 근력 판정 실패! (랜덤:${rnd} > ${calc})\n`;
+      result2+=calc>=rnd?`💪 ${name} 근력 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`💪 ${name} 근력 판정 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='agility'){
       const rnd=rand100();
       const calc=dex*rand15();
-      result+=calc>=rnd?`🤸 ${name} 민첩 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🤸 ${name} 민첩 판정 실패! (랜덤:${rnd} > ${calc})\n`;
+      result2+=calc>=rnd?`🤸 ${name} 민첩 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`🤸 ${name} 민첩 판정 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='special'){
       const rnd=rand100();
       const calc=sp*rand15();
-      result+=calc>=rnd?`✨ ${name} 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name} 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
+      result2+=calc>=rnd?`✨ ${name} 특수 판정 성공! (랜덤:${rnd} ≤ ${calc})\n`:`✨ ${name} 특수 판정 실패! (랜덤:${rnd} > ${calc})\n`;
     }else if(action==='attack'){
-  if(defTr){
-    const dmg=str*randRange(3,8); // ← 여기서 1~7 랜덤
-    defHp.value=Math.max(0,defHp.value-dmg);
-    result+=`${name}가 ${defName}를 공격, hp -${dmg} (-체력:${defHp.value})\n`;
-  } else result+=`${name}가 공격 대상을 선택하지 않음\n`;
-}
-});
+      if(defTr){
+        const dmg=str*randRange(3,8);
+        defHp.value=Math.max(0,defHp.value-dmg);
+        result2+=`${name}가 ${defName}를 공격, hp -${dmg} (-체력:${defHp.value})\n`;
+      } else result2+=`${name}가 공격 대상을 선택하지 않음\n`;
+    }
+  });
 
-  output.textContent=result;
+  output.textContent = result + result2;
 };
+
 document.getElementById('clear-output').onclick=()=>output.textContent='';
 updateTargetOptions();
 </script>
 </body>
 </html>
-
