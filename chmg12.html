@@ -402,11 +402,11 @@ document.getElementById('simulate').onclick=()=>{
     const rnd=rand100();
     let calc,label;
     switch(action){
-      case 'evade': calc=stats.dex*rand5to18(); label='회피'; break;
+      case 'evade': calc=stats.dex*18; label='회피'; break;
       case 'strength': calc=stats.str*rand5to18(); label='근력'; break;
-      case 'agility': calc=stats.dex*rand5to18(); label='민첩'; break;
-      case 'intelligence': calc=stats.int*rand5to18(); label='지능'; break;
-      case 'luck': calc=stats.luk*rand5to18(); label='행운'; break;
+      case 'agility': calc=stats.dex* 18; label='민첩'; break;
+      case 'intelligence': calc=stats.int*18(); label='지능'; break;
+      case 'luck': calc=stats.luk*18(); label='행운'; break;
       default: return;
     }
     const result=rnd<=calc?"성공.":"실패.";
