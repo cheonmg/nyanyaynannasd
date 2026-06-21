@@ -327,7 +327,7 @@ function updateBattleChars(){
     const weaponOptions = Object.keys(weapons).map(w=>`<option value="${w}">${w}</option>`).join('');
 
     newRow.innerHTML=`
-      <td>${name}</td><td>${str}</td><td>${dex}</td><td>${intl}</td><td>${luk}</td><td>${sp}</td>
+      <td>${name}</td><td>${str}</td><td>${dex}</td><td>${intl}</td><td>${luk}</td>
       <td><select class="char-weapon"><option value="">-- 없음 --</option>${weaponOptions}</select></td>
       <td><select class="char-action">
         <option value="attack">공격</option>
@@ -393,7 +393,7 @@ document.getElementById('simulate').onclick=()=>{
     const name=tr.cells[0].textContent;
     const stats={ str:Number(tr.cells[1].textContent), dex:Number(tr.cells[2].textContent),
                   int:Number(tr.cells[3].textContent), luk:Number(tr.cells[4].textContent),
-                  sp:Number(tr.cells[5].textContent)};
+                };
     const action=tr.querySelector('.char-action').value;
     const rnd=rand100();
     let calc,label;
