@@ -245,7 +245,7 @@ button.ghost{background:#eef2ff;color:#213}
 </style>
 
     <table id="chars-table">
-      <thead><tr><th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>특수</th><th>무기</th><th>행동</th><th>공격 대상</th></tr></thead>
+      <thead><tr><th>이름</th><th>근력</th><th>민첩</th><th>지능</th><th>행운</th><th>무기</th><th>행동</th><th>공격 대상</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
@@ -321,7 +321,6 @@ function updateBattleChars(){
     const dex=tr.querySelector('.char-dex').value;
     const intl=tr.querySelector('.char-int').value;
     const luk=tr.querySelector('.char-luk').value;
-    const sp=tr.querySelector('.char-special').value;
     const newRow=document.createElement('tr');
 
     // 무기 선택 옵션
@@ -337,7 +336,6 @@ function updateBattleChars(){
         <option value="agility">민첩 판정</option>
         <option value="intelligence">지능 사용</option>
         <option value="luck">행운 사용</option>
-        <option value="special">특수 판정</option>
       </select></td>
       <td><select class="char-target"></select></td>`;
     charsTable.appendChild(newRow);
@@ -405,7 +403,6 @@ document.getElementById('simulate').onclick=()=>{
       case 'agility': calc=stats.dex*rand5to18(); label='민첩'; break;
       case 'intelligence': calc=stats.int*rand5to18(); label='지능'; break;
       case 'luck': calc=stats.luk*rand5to18(); label='행운'; break;
-      case 'special': calc=stats.sp*rand5to18(); label='특수'; break;
       default: return;
     }
     const result=rnd<=calc?"성공.":"실패.";
