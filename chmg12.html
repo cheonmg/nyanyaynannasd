@@ -419,18 +419,50 @@ document.getElementById('simulate').onclick=()=>{
     const weapon=tr.querySelector('.char-weapon').value;
     const weaponBonus=weapons[weapon]||0;
 
-    if(action==='attack'){
-      if(defTr){
-        const defName=defTr.querySelector('.def-name').value;
-        const defHp=defTr.querySelector('.def-hp');
-        const dmg=str*rand2to8()+weaponBonus;
-        defHp.value=Math.max(0,defHp.value-dmg);
-        log+=`${name}이(가) ${defName}을(를) 공격, 피해 ${dmg} (${defName} hp: ${defHp.value})\n`;
-      } else {
-        log+=`${name}의 공격 대상이 없다.\n`;
-      }
+if(action==='attack'){
+  if(defTr){
+    const defName=defTr.querySelector('.def-name').value;
+    const defHp=defTr.querySelector('.def-hp');
+
+    let dmg = 0;
+
+    switch(str){
+      case 1:
+        dmg = randRange(1,5);
+        break;
+
+      case 2:
+        dmg = 3 + randRange(1,10);
+        break;
+
+      case 3:
+        dmg = 5 + randRange(1,5);
+        break;
+
+      case 4:
+        dmg = 9 + randRange(1,20);
+        break;
+
+      case 5:
+        dmg = 15 + randRange(1,25);
+        break;
+
+      default:
+        dmg = 0;
     }
-  });
+
+    dmg += weaponBonus;
+
+    defHp.value = Math.max(0, Number(defHp.value) - dmg);
+
+    log += `${name}이(가) ${defName}을(를) 공격, 피해 ${dmg} (${defName} hp: ${defHp.value})\n`;
+
+  } else {
+    log += `${name}의 공격 대상이 없다.\n`;
+  }
+}
+
+});
 
   output.textContent=log;
 };
