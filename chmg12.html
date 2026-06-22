@@ -421,9 +421,8 @@ if(evadeRoll <= evadeChance){
     const rnd=rand100();
     let calc,label;
     switch(action){
-      case 'evade': calc=stats.dex*15; label='회피'; break;
       case 'strength': calc=stats.str*15; label='근력'; break;
-      case 'agility': calc=stats.dex* 15; label='민첩'; break;
+      case 'agility': calc=stats.dex*15; label='민첩'; break;
       case 'intelligence': calc=stats.int*18; label='지능'; break;
       case 'luck': calc=stats.luk*18; label='행운'; break;
       default: return;
