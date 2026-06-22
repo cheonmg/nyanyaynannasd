@@ -388,7 +388,7 @@ document.getElementById('simulate').onclick=()=>{
     const charTr = chars[targetIndex];
     if (!charTr) return;
     const charName = charTr.cells[0].textContent;
-    const dmg = randRange(10, 30);
+    const dmg = randRange(3, 25);
     log += `${zName}이(가) ${charName}을(를) 공격, hp -${dmg}\n`;
   });
 
@@ -410,7 +410,7 @@ document.getElementById('simulate').onclick=()=>{
       default: return;
     }
     const result=rnd<=calc?"성공.":"실패.";
-    log+=`${name}, ${label} (${calc.toFixed(1)} vs 굴림 ${rnd}) → ${result}\n`;
+    log+=`${name}, ${label} → ${result}\n`;
   });
 
   // 3) 캐릭터 공격
@@ -424,6 +424,13 @@ document.getElementById('simulate').onclick=()=>{
     const weaponBonus=weapons[weapon]||0;
 
 if(action==='attack'){
+
+  const hitRoll = rand100();
+
+  if(hitRoll < 15){
+    log += `${name}, 공격 실패.`;
+    return;
+  }
   if(defTr){
     const defName=defTr.querySelector('.def-name').value;
     const defHp=defTr.querySelector('.def-hp');
