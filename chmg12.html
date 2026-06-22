@@ -388,8 +388,27 @@ document.getElementById('simulate').onclick=()=>{
     const charTr = chars[targetIndex];
     if (!charTr) return;
     const charName = charTr.cells[0].textContent;
-    const dmg = randRange(3, 25);
-    log += `${zName}이(가) ${charName}을(를) 공격, hp -${dmg}\n`;
+const dex = Number(charTr.cells[2].textContent);
+const evadeRoll = rand100();
+
+let evadeChance = 0;
+
+switch(dex){
+  case 1: evadeChance = 18; break;
+  case 2: evadeChance = 36; break;
+  case 3: evadeChance = 54; break;
+  case 4: evadeChance = 72; break;
+  case 5: evadeChance = 90; break;
+}
+
+log += `${zName}이(가) ${charName}을(를) 공격\n`;
+
+if(evadeRoll <= evadeChance){
+  log += `${charName}, 회피 판정 성공.\n`;
+} else {
+  const dmg = randRange(3, 25);
+  log += `${charName}, 회피 판정 실패. hp -${dmg}\n`;
+}
   });
 
   // 2) 캐릭터 판정
