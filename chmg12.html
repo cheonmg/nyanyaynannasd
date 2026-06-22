@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>이생인류 전투 지문 출력기 최종</title>
+<title>이생인류 전투 지문 출력기</title>
 <style>
 :root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans KR','Malgun Gothic',sans-serif;}
 body{margin:20px;background:#f6f7fb;color:#111}
@@ -388,26 +388,37 @@ document.getElementById('simulate').onclick=()=>{
     const charTr = chars[targetIndex];
     if (!charTr) return;
     const charName = charTr.cells[0].textContent;
-const dex = Number(charTr.cells[2].textContent);
-const evadeRoll = rand100();
-
-let evadeChance = 0;
-
-switch(dex){
-  case 1: evadeChance = 18; break;
-  case 2: evadeChance = 36; break;
-  case 3: evadeChance = 54; break;
-  case 4: evadeChance = 72; break;
-  case 5: evadeChance = 90; break;
-}
+const action = charTr.querySelector('.char-action').value;
 
 log += `${zName}이(가) ${charName}을(를) 공격\n`;
 
-if(evadeRoll <= evadeChance){
-  log += `${charName}, 회피 판정 성공.\n`;
+if(action === 'evade'){
+
+  const dex = Number(charTr.cells[2].textContent);
+  const evadeRoll = rand100();
+
+  let evadeChance = 0;
+
+  switch(dex){
+    case 1: evadeChance = 18; break;
+    case 2: evadeChance = 36; break;
+    case 3: evadeChance = 54; break;
+    case 4: evadeChance = 72; break;
+    case 5: evadeChance = 90; break;
+  }
+
+  if(evadeRoll <= evadeChance){
+    log += `${charName}, 회피 판정 성공.\n`;
+  } else {
+    const dmg = randRange(3, 25);
+    log += `${charName}, 회피 판정 실패. hp -${dmg}\n`;
+  }
+
 } else {
+
   const dmg = randRange(3, 25);
-  log += `${charName}, 회피 판정 실패. hp -${dmg}\n`;
+  log += `${charName}, hp -${dmg}\n`;
+
 }
   });
 
